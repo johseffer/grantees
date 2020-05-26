@@ -1,0 +1,33 @@
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 50px;
+    padding:0 25px;
+    background-color: white;
+
+    > img {
+        width: 128px;
+        height: 34px;
+    }
+}
+
+.nav {
+    display: flex;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background-color: #1FBFAE;
+    color: white;
+    padding: 0 25px;
+    height: 50px;
+}
