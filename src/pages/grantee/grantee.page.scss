@@ -1,0 +1,48 @@
+.page-header {
+    background-color: #eceff1;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    padding: 0 25px;
+}
+
+.page-header-title {
+    color: #757575;
+    font-family: 'Roboto';
+    font-size: 28px;
+    font-weight: 300;
+    line-height: 34px;
+    margin-right: 10px;
+}
+
+.add-button {
+    background-color: #1FBFAE !important;
+    width: 34px;
+    color: white;
+
+    > span {
+        color: white;
+    }
+
+    &:hover {
+        background-color: rgb(25, 179, 163) !important;
+    }
+}
+
+.action-container {
+    display: flex;
+    flex: 0 0 auto;
+}
+
+.search-container {
+    width: 100%;
+
+    > div {
+        display: flex;
+        align-items: flex-end;
+    }
+}
+
+.search-input {
+    width: 100%;
+}
