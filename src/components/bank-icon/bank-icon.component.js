@@ -3,7 +3,7 @@ import React from 'react'
 //Bradesco (237), Caixa Econômica Federal 104), Sicoob ( 756) e Banco do Brasil (001)
 
 import generalIcon from './images/general.png'
-import bradescoIcon from './images/bradesco.png'
+import bradescoIcon from './images/bradesco.PNG'
 import caixaIcon from './images/caixa.png'
 import sicoobIcon from './images/sicoob.png'
 
