@@ -1,0 +1,28 @@
+.grantee-form-title {
+    color: #757575;
+    font-family: "Roboto";
+    font-size: 28px;
+    font-weight: 300;
+    line-height: 34px;
+    margin-right: 10px;
+    margin-left: 5px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    display: block;
+}
+
+.grantee-form-container {
+    display: flex;
+    justify-content: center;
+    padding: 25px;
+}
+
+.form-control {
+    display: flex;
+}
+
+.form-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
