@@ -1,30 +1,14 @@
 import React from 'react'
 import IconButton from '@material-ui/core/IconButton'
 import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import { withStyles } from '@material-ui/core/styles'
+import StyledTextField from './../../components/styled-text-field/styled-text-field.component'
 
 import AddIcon from '@material-ui/icons/Add'
 import SearchIcon from "@material-ui/icons/Search"
 
 import './grantee.page.scss'
-
-const CssTextField = withStyles({
-    root: {
-      '& label.Mui-focused': {
-        color: '#1FBFAE',
-      },
-      '& .MuiInput-underline:after': {
-        borderBottomColor: '#1FBFAE',
-      },
-      '& .MuiOutlinedInput-root': {
-        '&.Mui-focused fieldset': {
-          borderColor: '#1FBFAE',
-        },
-      },
-    },
-  })(TextField);
 
 const styles = {
     input: {
@@ -66,7 +50,7 @@ const GranteePage = (props) => {
                 </IconButton>
             </div>
             <div className="search-container">                                    
-                <CssTextField
+                <StyledTextField
                     size="small"
                     className="search-input"
                     variant="outlined"
