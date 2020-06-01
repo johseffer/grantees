@@ -6,8 +6,8 @@ import './grantee-form.component.scss'
 import StyledButton from './../../../../components/styled-button/styled-button.component'
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '70%',
+    root: { 
+        width: '100%',
         '& .MuiTextField-root': {
             margin: theme.spacing(1)
         },

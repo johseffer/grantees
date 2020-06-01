@@ -1,9 +1,13 @@
 import React from 'react'
 import GranteeForm from '../components/grantee-form/grantee-form.component'
 
+import './grantee-add.page.scss'
+
 const GranteeAddPage = (props) => {
     return (
-        <GranteeForm />
+        <div className="add-grantee-container">
+            <GranteeForm />
+        </div>
     )
 }
 
