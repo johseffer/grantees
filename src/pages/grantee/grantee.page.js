@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import { withStyles } from '@material-ui/core/styles'
 import StyledTextField from './../../components/styled-text-field/styled-text-field.component'
+import GranteeList from './components/grantee-list/grantee-list.component'
 
 import AddIcon from '@material-ui/icons/Add'
 import SearchIcon from "@material-ui/icons/Search"
@@ -42,35 +43,40 @@ const styles = {
 const GranteePage = (props) => {
     const { classes } = props;
     return (
-        <div className="page-header">
-            <div className="action-container">
-                <span className="page-header-title">Seus Favorecidos</span>
-                <IconButton color="primary" size="small" className="add-button" aria-label="Incluir favorecido">
-                    <AddIcon />
-                </IconButton>
+        <>
+            <div className="page-header">
+                <div className="action-container">
+                    <span className="page-header-title">Seus Favorecidos</span>
+                    <IconButton color="primary" size="small" className="add-button" aria-label="Incluir favorecido">
+                        <AddIcon />
+                    </IconButton>
+                </div>
+                <div className="search-container">                                    
+                    <StyledTextField
+                        size="small"
+                        className="search-input"
+                        variant="outlined"
+                        id="custom-css-outlined-input"
+                        placeholder="Nome, CPF, agência ou conta"
+                        InputProps={{
+                            endAdornment: (
+                            <InputAdornment>
+                                <Button
+                                    variant="contained"
+                                    className={classes.button}
+                                    startIcon={<SearchIcon />}
+                                />                            
+                            </InputAdornment>
+                            ),
+                            classes: { input: classes.input, adornedEnd: classes.adornedEnd }
+                        }}   
+                    />
+                </div>
             </div>
-            <div className="search-container">                                    
-                <StyledTextField
-                    size="small"
-                    className="search-input"
-                    variant="outlined"
-                    id="custom-css-outlined-input"
-                    placeholder="Nome, CPF, agência ou conta"
-                    InputProps={{
-                        endAdornment: (
-                        <InputAdornment>
-                            <Button
-                                variant="contained"
-                                className={classes.button}
-                                startIcon={<SearchIcon />}
-                            />                            
-                        </InputAdornment>
-                        ),
-                        classes: { input: classes.input, adornedEnd: classes.adornedEnd }
-                    }}   
-                />
+            <div>
+                <GranteeList />
             </div>
-        </div>
+        </>
     )
 }
 
