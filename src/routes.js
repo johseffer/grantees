@@ -1,8 +1,10 @@
 import React from 'react'
 
-import GranteePage from './pages/grantee/grantee.page'
+import GranteeListPage from './pages/grantee/grantee-list/grantee-list.page'
+import GranteeAddPage from './pages/grantee/grantee-add/grantee-add.page';
 
 const routes = {
-  "/": () => <GranteePage />
+  "/": () => <GranteeListPage />,
+  "/grantee/add": () => <GranteeAddPage />
 };
 export default routes;
