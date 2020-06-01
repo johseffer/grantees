@@ -17,6 +17,7 @@ import Paper from '@material-ui/core/Paper'
 import Checkbox from '@material-ui/core/Checkbox'
 import Tooltip from '@material-ui/core/Tooltip'
 import DeleteIcon from '@material-ui/icons/Delete'
+import GranteeEdit from './../grantee-edit/grantee-edit.component'
 
 import transfeeraIcon from '../../images/logo-transfeera-vertical.png'
 import BankIcon from './../../../../components/bank-icon/bank-icon.component'
@@ -211,6 +212,7 @@ const GranteeList = () => {
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const rowsPerPage = 10;
+    const [editGranteeModalOpened, setEditGranteeModalOpened] = React.useState(false)
 
     const getPagesCount = () => {
         if (rows.length < rowsPerPage) return 1
@@ -256,10 +258,19 @@ const GranteeList = () => {
         setPage(newPage);
     };
 
+    const handleEditGrantee = (row) => {
+        setEditGranteeModalOpened(true)
+    }
+
+    const handleCloseGranteeModal = () => {
+        setEditGranteeModalOpened(false)
+    }
+
     const isSelected = (cpfcnpj) => selected.indexOf(cpfcnpj) !== -1;
 
     return (
         <div className={classes.root}>
+            <GranteeEdit opened={editGranteeModalOpened} handleClose={handleCloseGranteeModal} />
             <Paper className={classes.paper}>
                 <GranteeListToolbar numSelected={selected.length} />
                 <TableContainer>
@@ -292,8 +303,7 @@ const GranteeList = () => {
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
                                             key={row.cpfcnpj}
-                                            selected={isItemSelected}
-                                            
+                                            selected={isItemSelected}                                            
                                         >
                                             <TableCell padding="checkbox">
                                                 <Checkbox
@@ -302,16 +312,16 @@ const GranteeList = () => {
                                                     onChange={(event) => handleSelect(event, row.cpfcnpj)}
                                                 />
                                             </TableCell>
-                                            <TableCell component="th" id={labelId} scope="row" padding="none">
+                                            <TableCell component="th" id={labelId} scope="row" padding="none" onClick={() => { handleEditGrantee(row)}} >
                                                 {row.name}
                                             </TableCell>
-                                            <TableCell>{row.cpfcnpj}</TableCell>
-                                            <TableCell>                                                
+                                            <TableCell  onClick={() => { handleEditGrantee(row)}}>{row.cpfcnpj}</TableCell>
+                                            <TableCell  onClick={() => { handleEditGrantee(row)}}>                                                
                                                 <BankIcon bank={row.bank} />
                                             </TableCell>
-                                            <TableCell>{row.agency}</TableCell>
-                                            <TableCell>{row.account}</TableCell>
-                                            <TableCell>{row.status}</TableCell>
+                                            <TableCell onClick={() => { handleEditGrantee(row)}}>{row.agency}</TableCell>
+                                            <TableCell onClick={() => { handleEditGrantee(row)}}>{row.account}</TableCell>
+                                            <TableCell onClick={() => { handleEditGrantee(row)}}>{row.status}</TableCell>
                                         </TableRow>
                                     );
                                 })}                           
