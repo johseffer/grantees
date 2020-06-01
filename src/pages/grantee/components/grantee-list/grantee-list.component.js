@@ -18,10 +18,11 @@ import Checkbox from '@material-ui/core/Checkbox'
 import Tooltip from '@material-ui/core/Tooltip'
 import DeleteIcon from '@material-ui/icons/Delete'
 import GranteeEdit from './../grantee-edit/grantee-edit.component'
-
-import transfeeraIcon from '../../images/logo-transfeera-vertical.png'
 import BankIcon from './../../../../components/bank-icon/bank-icon.component'
 
+import transfeeraIcon from '../../images/logo-transfeera-vertical.png'
+
+import './grantee-list.component.scss'
 
 function createData(name, cpfcnpj, bank, agency, account, status) {
     return { name, cpfcnpj, bank, agency, account, status };
@@ -32,7 +33,7 @@ const rows = [
     
     createData('Bárbara da Silva Silveira Fontes', '021.935.239-13', '237', '0814-0', '01002713-9', 1),
     
-    createData('Bárbara da Silva Silveira Fontes', '021.935.239-14', '104', '0814-0', '01002713-9', 1),
+    createData('Bárbara da Silva Silveira Fontes', '021.935.239-14', '104', '0814-0', '01002713-9', 2),
     
     createData('Bárbara da Silva Silveira Fontes', '021.935.239-15', '756', '0814-0', '01002713-9', 1),
 ];
@@ -179,7 +180,7 @@ GranteeListToolbar.propTypes = {
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: '100%',
+        width: '100%'
     },
     paper: {
         width: '100%'
@@ -268,6 +269,14 @@ const GranteeList = () => {
 
     const isSelected = (cpfcnpj) => selected.indexOf(cpfcnpj) !== -1;
 
+    const getStatusButton = (status) => {
+        return (
+        <div className={`grantee-status-button ${status === 1 ? 'validated' : 'draft'}`}>
+            {status === 1 ? 'Validado' : 'Rascunho'}
+        </div>
+        )
+    }
+
     return (
         <div className={classes.root}>
             <GranteeEdit opened={editGranteeModalOpened} handleClose={handleCloseGranteeModal} />
@@ -321,7 +330,9 @@ const GranteeList = () => {
                                             </TableCell>
                                             <TableCell onClick={() => { handleEditGrantee(row)}}>{row.agency}</TableCell>
                                             <TableCell onClick={() => { handleEditGrantee(row)}}>{row.account}</TableCell>
-                                            <TableCell onClick={() => { handleEditGrantee(row)}}>{row.status}</TableCell>
+                                            <TableCell onClick={() => { handleEditGrantee(row)}}>
+                                                {getStatusButton(row.status)}
+                                            </TableCell>
                                         </TableRow>
                                     );
                                 })}                           

@@ -1,0 +1,17 @@
+.grantee-status-button {    
+    padding: 10px;
+    border-radius: 25px;
+    width: 158px;
+    justify-content: center;
+    display: flex;
+    color: white;
+    cursor: pointer;
+
+    &.validated {
+        background-color: #3092E3;
+    }
+
+    &.draft {
+        background-color: #72818D;
+    }
+}
