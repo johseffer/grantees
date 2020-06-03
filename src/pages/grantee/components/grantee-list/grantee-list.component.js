@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
 import { lighten, makeStyles } from '@material-ui/core/styles'
@@ -19,24 +19,11 @@ import Tooltip from '@material-ui/core/Tooltip'
 import DeleteIcon from '@material-ui/icons/Delete'
 import GranteeEdit from './../grantee-edit/grantee-edit.component'
 import BankIcon from './../../../../components/bank-icon/bank-icon.component'
+import { getGrantees } from '../../../../gateways/grantee.gateway'
 
 import transfeeraIcon from '../../images/logo-transfeera-vertical.png'
 
 import './grantee-list.component.scss'
-
-function createData(name, cpfcnpj, bank, agency, account, status) {
-    return { name, cpfcnpj, bank, agency, account, status };
-}
-
-const rows = [
-    createData('Bárbara da Silva Silveira Fontes', '021.935.239-12', '001', '0814-0', '01002713-9', 1),
-    
-    createData('Bárbara da Silva Silveira Fontes', '021.935.239-13', '237', '0814-0', '01002713-9', 1),
-    
-    createData('Bárbara da Silva Silveira Fontes', '021.935.239-14', '104', '0814-0', '01002713-9', 2),
-    
-    createData('Bárbara da Silva Silveira Fontes', '021.935.239-15', '756', '0814-0', '01002713-9', 1),
-];
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -200,7 +187,7 @@ const useStyles = makeStyles((theme) => ({
         width: 1,
     },
     tableHeaderCell: {
-        root: { 
+        root: {
             backgroundColor: 'black'
         }
     }
@@ -210,10 +197,18 @@ const GranteeList = () => {
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('name');
+    const [rows, setRows] = React.useState([]);
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
+
     const rowsPerPage = 10;
     const [editGranteeModalOpened, setEditGranteeModalOpened] = React.useState(false)
+
+    useEffect(() => {
+        getGrantees().then(response => {
+            setRows(response.data)
+        })
+    }, [])
 
     const getPagesCount = () => {
         if (rows.length < rowsPerPage) return 1
@@ -271,9 +266,9 @@ const GranteeList = () => {
 
     const getStatusButton = (status) => {
         return (
-        <div className={`grantee-status-button ${status === 1 ? 'validated' : 'draft'}`}>
-            {status === 1 ? 'Validado' : 'Rascunho'}
-        </div>
+            <div className={`grantee-status-button ${status === '1' ? 'validated' : 'draft'}`}>
+                {status === '1' ? 'Validado' : 'Rascunho'}
+            </div>
         )
     }
 
@@ -307,12 +302,12 @@ const GranteeList = () => {
 
                                     return (
                                         <TableRow
-                                            hover                                            
+                                            hover
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
                                             key={row.cpfcnpj}
-                                            selected={isItemSelected}                                            
+                                            selected={isItemSelected}
                                         >
                                             <TableCell padding="checkbox" style={{ paddingLeft: '15px' }}>
                                                 <Checkbox
@@ -321,21 +316,21 @@ const GranteeList = () => {
                                                     onChange={(event) => handleSelect(event, row.cpfcnpj)}
                                                 />
                                             </TableCell>
-                                            <TableCell component="th" id={labelId} scope="row" padding="none" onClick={() => { handleEditGrantee(row)}} >
+                                            <TableCell component="th" id={labelId} scope="row" padding="none" onClick={() => { handleEditGrantee(row) }} >
                                                 {row.name}
                                             </TableCell>
-                                            <TableCell  onClick={() => { handleEditGrantee(row)}}>{row.cpfcnpj}</TableCell>
-                                            <TableCell  onClick={() => { handleEditGrantee(row)}}>                                                
+                                            <TableCell onClick={() => { handleEditGrantee(row) }}>{row.cpfcnpj}</TableCell>
+                                            <TableCell onClick={() => { handleEditGrantee(row) }}>
                                                 <BankIcon bank={row.bank} />
                                             </TableCell>
-                                            <TableCell onClick={() => { handleEditGrantee(row)}}>{row.agency}</TableCell>
-                                            <TableCell onClick={() => { handleEditGrantee(row)}}>{row.account}</TableCell>
-                                            <TableCell onClick={() => { handleEditGrantee(row)}}>
+                                            <TableCell onClick={() => { handleEditGrantee(row) }}>{row.agency}</TableCell>
+                                            <TableCell onClick={() => { handleEditGrantee(row) }}>{row.account}</TableCell>
+                                            <TableCell onClick={() => { handleEditGrantee(row) }}>
                                                 {getStatusButton(row.status)}
                                             </TableCell>
                                         </TableRow>
                                     );
-                                })}                           
+                                })}
                         </TableBody>
                     </Table>
                 </TableContainer>
