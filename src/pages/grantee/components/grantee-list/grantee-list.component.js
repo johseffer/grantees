@@ -82,7 +82,7 @@ function GranteeListHead(props) {
     return (
         <TableHead>
             <TableRow>
-                <TableCell padding="checkbox">
+                <TableCell padding="checkbox" style={{ paddingLeft: '15px' }}>
                     <Checkbox
                         indeterminate={numSelected > 0 && numSelected < rowCount}
                         checked={rowCount > 0 && numSelected === rowCount}
@@ -314,7 +314,7 @@ const GranteeList = () => {
                                             key={row.cpfcnpj}
                                             selected={isItemSelected}                                            
                                         >
-                                            <TableCell padding="checkbox">
+                                            <TableCell padding="checkbox" style={{ paddingLeft: '15px' }}>
                                                 <Checkbox
                                                     checked={isItemSelected}
                                                     inputProps={{ 'aria-labelledby': labelId }}
