@@ -4,7 +4,10 @@ let Grantee = new Schema({
     name: {
         type: String
     },
-    cpfcnpj: {
+    cpfCnpj: {
+        type: String
+    },
+    email: {
         type: String
     },
     bank: {
@@ -13,7 +16,16 @@ let Grantee = new Schema({
     agency: {
         type: String
     },
+    agencyDigit: {
+        type: String
+    },
     account: {
+        type: String
+    },
+    accountDigit: {
+        type: String
+    },
+    accountType: {
         type: String
     },
     status: {
