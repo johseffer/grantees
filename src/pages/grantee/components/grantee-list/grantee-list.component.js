@@ -53,7 +53,7 @@ function stableSort(array, comparator) {
 
 const headCells = [
     { id: 'name', numeric: false, disablePadding: true, label: 'Favorecido' },
-    { id: 'cpfcnpj', numeric: false, disablePadding: false, label: 'CPF / CNPJ' },
+    { id: 'cpfCnpj', numeric: false, disablePadding: false, label: 'CPF / CNPJ' },
     { id: 'bank', numeric: false, disablePadding: false, label: 'Banco' },
     { id: 'agency', numeric: false, disablePadding: false, label: 'Agência' },
     { id: 'account', numeric: false, disablePadding: false, label: 'CC' },
@@ -203,12 +203,19 @@ const GranteeList = () => {
 
     const rowsPerPage = 10;
     const [editGranteeModalOpened, setEditGranteeModalOpened] = React.useState(false)
+    const [selectedId, setSelectedId] = React.useState(undefined)
 
     useEffect(() => {
         getGrantees().then(response => {
             setRows(response.data)
         })
     }, [])
+
+    useEffect(() => {      
+        if (selectedId) {  
+            setEditGranteeModalOpened(true)
+        }
+    }, [selectedId])
 
     const getPagesCount = () => {
         if (rows.length < rowsPerPage) return 1
@@ -223,19 +230,19 @@ const GranteeList = () => {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = rows.map((n) => n.cpfcnpj);
+            const newSelecteds = rows.map((n) => n._id);
             setSelected(newSelecteds);
             return;
         }
         setSelected([]);
     };
 
-    const handleSelect = (event, cpfcnpj) => {
-        const selectedIndex = selected.indexOf(cpfcnpj);
+    const handleSelect = (event, _id) => {
+        const selectedIndex = selected.indexOf(_id);
         let newSelected = [];
 
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, cpfcnpj);
+            newSelected = newSelected.concat(selected, _id);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -255,14 +262,15 @@ const GranteeList = () => {
     };
 
     const handleEditGrantee = (row) => {
-        setEditGranteeModalOpened(true)
+        setSelectedId(row._id)
     }
 
     const handleCloseGranteeModal = () => {
+        setSelectedId(undefined)
         setEditGranteeModalOpened(false)
     }
 
-    const isSelected = (cpfcnpj) => selected.indexOf(cpfcnpj) !== -1;
+    const isSelected = (_id) => selected.indexOf(_id) !== -1;
 
     const getStatusButton = (status) => {
         return (
@@ -272,9 +280,18 @@ const GranteeList = () => {
         )
     }
 
+    const onItemUpdated = (data) => {
+        const newRows = [...rows]
+        const updatedIndex = newRows.findIndex(item => item.id === data.id)
+        if (updatedIndex) {
+            newRows[updatedIndex] = data
+        }
+        setRows(newRows)
+    }
+
     return (
         <div className={classes.root}>
-            <GranteeEdit opened={editGranteeModalOpened} handleClose={handleCloseGranteeModal} />
+            <GranteeEdit id={selectedId} opened={editGranteeModalOpened} handleClose={handleCloseGranteeModal} onItemUpdated={onItemUpdated} />
             <Paper className={classes.paper}>
                 <GranteeListToolbar numSelected={selected.length} />
                 <TableContainer>
@@ -297,7 +314,7 @@ const GranteeList = () => {
                             {stableSort(rows, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
-                                    const isItemSelected = isSelected(row.cpfcnpj);
+                                    const isItemSelected = isSelected(row._id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
@@ -306,25 +323,25 @@ const GranteeList = () => {
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
-                                            key={row.cpfcnpj}
+                                            key={row._id}
                                             selected={isItemSelected}
                                         >
                                             <TableCell padding="checkbox" style={{ paddingLeft: '15px' }}>
                                                 <Checkbox
                                                     checked={isItemSelected}
                                                     inputProps={{ 'aria-labelledby': labelId }}
-                                                    onChange={(event) => handleSelect(event, row.cpfcnpj)}
+                                                    onChange={(event) => handleSelect(event, row._id)}
                                                 />
                                             </TableCell>
                                             <TableCell component="th" id={labelId} scope="row" padding="none" onClick={() => { handleEditGrantee(row) }} >
                                                 {row.name}
                                             </TableCell>
-                                            <TableCell onClick={() => { handleEditGrantee(row) }}>{row.cpfcnpj}</TableCell>
+                                            <TableCell onClick={() => { handleEditGrantee(row) }}>{row.cpfCnpj}</TableCell>
                                             <TableCell onClick={() => { handleEditGrantee(row) }}>
                                                 <BankIcon bank={row.bank} />
                                             </TableCell>
-                                            <TableCell onClick={() => { handleEditGrantee(row) }}>{row.agency}</TableCell>
-                                            <TableCell onClick={() => { handleEditGrantee(row) }}>{row.account}</TableCell>
+                                            <TableCell onClick={() => { handleEditGrantee(row) }}>{`${row.agency}-${row.agencyDigit}`}</TableCell>
+                                            <TableCell onClick={() => { handleEditGrantee(row) }}>{`${row.account}-${row.accountDigit}`}</TableCell>
                                             <TableCell onClick={() => { handleEditGrantee(row) }}>
                                                 {getStatusButton(row.status)}
                                             </TableCell>

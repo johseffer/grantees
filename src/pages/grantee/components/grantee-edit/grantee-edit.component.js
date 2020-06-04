@@ -7,22 +7,23 @@ const useStyles = makeStyles((theme) => ({
     modal: {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'center'
     },
     paper: {
         position: 'absolute',
         width: 731,
         backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(2, 4, 3),
+        outline: 'none'
     },
 }));
 
-export default function GranteeEdit({ opened, handleClose }) {
+export default function GranteeEdit({ id, opened, handleClose, onItemUpdated }) {
     const classes = useStyles();
 
     const body = (
         <div className={classes.paper}>
-            <GranteeForm />
+            <GranteeForm id={id} onClickCancel={handleClose} onItemUpdated={onItemUpdated} />
         </div>
     );
 
