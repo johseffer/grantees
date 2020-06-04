@@ -32,6 +32,44 @@ granteesRoutes.route('/').get(function(req, res) {
   });
 });
 
+granteesRoutes.route('/:id').get(function(req, res) {
+  let id = req.params.id;
+  Grantee.findById(id, function(err, grantee) {
+      res.json(grantee);
+  });
+});
+
+granteesRoutes.route('/add').post(function(req, res) {
+  let grantee = new Grantee(req.body);
+  grantee.save()
+      .then(todo => {
+          res.status(200).json({'grantee': 'grantee added successfully'});
+      })
+      .catch(err => {
+          res.status(400).send('adding new grantee failed');
+      });
+});
+
+granteesRoutes.route('/update/:id').post(function(req, res) {
+  Grantee.findById(req.params.id, function(err, grantee) {
+      if (!grantee)
+          res.status(404).send("data is not found");
+      else
+          grantee.name = req.body.name;
+          grantee.cpfCnpj = req.body.cpfCnpj;
+          grantee.bank = req.body.bank;
+          grantee.agency = req.body.agency;
+          grantee.account = req.body.account;
+          grantee.status = req.body.status;
+          grantee.save().then(grantee => {
+              res.json('Grantee updated!');
+          })
+          .catch(err => {
+              res.status(400).send("Update not possible");
+          });
+  });
+});
+
 app.use('/grantees', granteesRoutes);
 
 app.listen(port, function() {
