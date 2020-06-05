@@ -46,7 +46,7 @@ const GranteeListPage = (props) => {
     const { classes } = props;
 
     const handleOnClickAdd = () => {
-        navigate('/grantee/add');
+        navigate('/grantees/add');
     }
 
     return (
