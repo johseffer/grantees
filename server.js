@@ -59,7 +59,10 @@ granteesRoutes.route('/update/:id').post(function(req, res) {
           grantee.cpfCnpj = req.body.cpfCnpj;
           grantee.bank = req.body.bank;
           grantee.agency = req.body.agency;
+          grantee.agencyDigit = req.body.agencyDigit;
           grantee.account = req.body.account;
+          grantee.accountType = req.body.accountType;
+          grantee.accountDigit = req.body.accountDigit;
           grantee.status = req.body.status;
           grantee.save().then(grantee => {
               res.json('Grantee updated!');
