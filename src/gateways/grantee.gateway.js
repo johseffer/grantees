@@ -9,9 +9,9 @@ export function getGranteeById(id) {
 }
 
 export function create(data) {
-    return post(`/grantee/create`)
+    return post(`/grantee/create`, data)
 }
 
 export function update(id, data) {
-    return post(`/grantee/update/${id}`, { data })
+    return post(`/grantee/update/${id}`, data)
 }
