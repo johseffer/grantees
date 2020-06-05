@@ -39,7 +39,7 @@ granteesRoutes.route('/:id').get(function(req, res) {
   });
 });
 
-granteesRoutes.route('/add').post(function(req, res) {
+granteesRoutes.route('/create').post(function(req, res) {
   let grantee = new Grantee(req.body);
   grantee.save()
       .then(todo => {
@@ -70,7 +70,15 @@ granteesRoutes.route('/update/:id').post(function(req, res) {
   });
 });
 
-app.use('/grantees', granteesRoutes);
+app.use('/grantee', granteesRoutes);
+
+app.get('/*', function(req, res) {
+  res.sendFile(path.join(__dirname, 'build/index.html'), function(err) {
+    if (err) {
+      res.status(500).send(err)
+    }
+  })
+})
 
 app.listen(port, function() {
     console.log("Server is running on Port: " + port);

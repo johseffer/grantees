@@ -5,6 +5,6 @@ import GranteeAddPage from './pages/grantee/grantee-add/grantee-add.page';
 
 const routes = {
   "/": () => <GranteeListPage />,
-  "/grantee/add": () => <GranteeAddPage />
+  "/grantees/add": () => <GranteeAddPage />
 };
 export default routes;
