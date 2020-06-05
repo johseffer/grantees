@@ -15,17 +15,16 @@ const SelectBank = ({ onChange, value, register, errors }) => {
             id="select-bank"
             options={banks}
             getOptionLabel={(option) => option.title}
-            style={{ width: '60%' }}
+            style={{ width: '60%', marginRight: '15px' }}
+            value={value ? banks[banks.findIndex(item => item.code === value)] : ''}
+            onChange={onChange}
             renderInput={(params) =>                 
                 <StyledTextField
                     {...params}
                     name="bank" 
                     label="Qual o banco do favorecido?"
                     size="small"
-                    InputLabelProps={{ shrink: true }}
-                    onChange={onChange}
-                    value={value}
-                    required
+                    InputLabelProps={{ shrink: true }} 
                     error={errors.bank ? true : false}
                     inputRef={register}
                     helperText={errors.bank ? errors.bank.message : undefined}
