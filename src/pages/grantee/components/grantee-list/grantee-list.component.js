@@ -211,8 +211,8 @@ const GranteeList = () => {
         })
     }, [])
 
-    useEffect(() => {      
-        if (selectedId) {  
+    useEffect(() => {
+        if (selectedId) {
             setEditGranteeModalOpened(true)
         }
     }, [selectedId])
@@ -282,11 +282,12 @@ const GranteeList = () => {
 
     const onItemUpdated = (data) => {
         const newRows = [...rows]
-        const updatedIndex = newRows.findIndex(item => item.id === data.id)
-        if (updatedIndex) {
+        const updatedIndex = newRows.findIndex(item => item._id === data._id)
+        if (updatedIndex >= 0) {
             newRows[updatedIndex] = data
         }
         setRows(newRows)
+        handleCloseGranteeModal()
     }
 
     return (
