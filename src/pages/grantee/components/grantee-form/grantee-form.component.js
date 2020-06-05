@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import StyledTextField from './../../../../components/styled-text-field/styled-text-field.component'
 import StyledButton from './../../../../components/styled-button/styled-button.component'
 import { getGranteeById } from '../../../../gateways/grantee.gateway'
+import SelectBank from './../../../../components/select-bank/select-bank.component'
 
 import './grantee-form.component.scss'
 
@@ -184,19 +185,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
                 </div>
                 <span className="grantee-form-title">Quais os dados bancários do favorecido?</span>
                 <div className="form-control">
-                    <StyledTextField
-                        name="bank" 
-                        label="Qual o banco do favorecido?"
-                        size="small"
-                        style={{ width: '60%' }}
-                        InputLabelProps={{ shrink: true }}
-                        onChange={onChangeBank}
-                        value={bank}
-                        required
-                        error={errors.bank ? true : false}
-                        inputRef={register}
-                        helperText={errors.bank ? errors.bank.message : undefined}
-                    />
+                    <SelectBank onChange={onChangeBank} value={bank} register={register} errors={errors} />
                     <StyledTextField
                         name="agency"
                         label="Qual a agência?"
