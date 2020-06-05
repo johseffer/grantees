@@ -5,8 +5,10 @@ import { navigate } from 'hookrouter'
 import { makeStyles } from '@material-ui/core/styles'
 import StyledTextField from './../../../../components/styled-text-field/styled-text-field.component'
 import StyledButton from './../../../../components/styled-button/styled-button.component'
-import { getGranteeById } from '../../../../gateways/grantee.gateway'
+import { getGranteeById, update } from '../../../../gateways/grantee.gateway'
 import SelectBank from './../../../../components/select-bank/select-bank.component'
+import SelectAccountType from './../../../../components/select-account-type/select-account-type.component'
+import { create } from './../../../../gateways/grantee.gateway'
 
 import './grantee-form.component.scss'
 
@@ -87,8 +89,8 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
         setCpfCnpj(e.target.value)
     }
 
-    const onChangeBank = (e) => {
-        setBank(e.target.value)
+    const onChangeBank = (e, values) => {
+        setBank(values.code)
     }
 
     const onChangeAgency = (e) => {
@@ -115,8 +117,10 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
         onClickCancel()
     }
 
+    
     const getData = () => {
         return {
+            _id: id,
             name: name,
             cpfCnpj: cpfCnpj,
             email: email,
@@ -129,17 +133,22 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
         }
     }
 
-    const onSubmit = (data) => {        
+    const onSubmit = (data) => {      
+        const state = getData()  
         if (id) {
-            onItemUpdated(getData());
+            update(id, state).then(response => {
+                onItemUpdated(state);
+            })
         } else {
-            navigate('/');
+            create(state).then(response => {
+                navigate('/');
+            })
         }
     }
 
     return (
         <div className="grantee-form-container">
-            <form  onSubmit={handleSubmit(onSubmit)} className={classes.root} noValidate autoComplete="off">
+            <form  onSubmit={handleSubmit(onSubmit)} className={classes.root}>
                 <span className="grantee-form-title">Quais os dados do favorecido?</span>
                 <div className="form-control">
                     <StyledTextField
@@ -161,8 +170,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
                         style={{ width: '25%' }}
                         InputLabelProps={{ shrink: true }}
                         onChange={onChangeCpfCnpj}
-                        value={cpfCnpj}
-                        required
+                        value={cpfCnpj}                        
                         error={errors.cpfCnpj ? true : false}
                         inputRef={register}
                         helperText={errors.cpfCnpj ? errors.cpfCnpj.message : undefined}
@@ -176,8 +184,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
                         style={{ width: '75%' }}
                         InputLabelProps={{ shrink: true }}
                         onChange={onChangeEmail}
-                        value={email}
-                        required
+                        value={email}                        
                         error={errors.email ? true : false}
                         inputRef={register}
                         helperText={errors.email ? errors.email.message : undefined}
@@ -193,8 +200,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
                         style={{ width: '30%' }}
                         InputLabelProps={{ shrink: true }}
                         onChange={onChangeAgency}
-                        value={agency}
-                        required
+                        value={agency}                        
                         error={errors.agency ? true : false}
                         inputRef={register}
                         helperText={errors.agency ? errors.agency.message : undefined}
@@ -213,19 +219,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
                     />
                 </div>
                 <div className="form-control">
-                    <StyledTextField
-                        name="accountType"
-                        label="Qual o tipo de conta?"
-                        size="small"
-                        style={{ width: '60%' }}
-                        InputLabelProps={{ shrink: true }}
-                        onChange={onChangeAccountType}
-                        value={accountType}
-                        required
-                        error={errors.accountType ? true : false}
-                        inputRef={register}
-                        helperText={errors.accountType ? errors.accountType.message : undefined}
-                    />
+                    <SelectAccountType onChange={onChangeAccountType} selected={accountType} register={register} errors={errors} bank={bank} />                    
                     <StyledTextField
                         name="account"
                         label="Qual a conta corrente?"
@@ -233,8 +227,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
                         style={{ width: '30%' }}
                         InputLabelProps={{ shrink: true }}
                         onChange={onChangeAccount}
-                        value={account}
-                        required
+                        value={account}                        
                         error={errors.account ? true : false}
                         inputRef={register}
                         helperText={errors.account ? errors.account.message : undefined}
@@ -246,8 +239,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
                         style={{ width: '10%' }}
                         InputLabelProps={{ shrink: true }}
                         onChange={onChangeAccountDigit}
-                        value={accountDigit}
-                        required
+                        value={accountDigit}                        
                         error={errors.accountDigit ? true : false}
                         inputRef={register}
                         helperText={errors.accountDigit ? errors.accountDigit.message : undefined}
