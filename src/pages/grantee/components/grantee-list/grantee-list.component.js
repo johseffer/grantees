@@ -20,10 +20,12 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import GranteeEdit from './../grantee-edit/grantee-edit.component'
 import BankIcon from './../../../../components/bank-icon/bank-icon.component'
 import { getGrantees } from '../../../../gateways/grantee.gateway'
+import DeleteConfirmationModal from './../delete-confirmation-modal/delete-confirmation-modal.component'
 
 import transfeeraIcon from '../../images/logo-transfeera-vertical.png'
 
 import './grantee-list.component.scss'
+import { remove } from './../../../../gateways/grantee.gateway'
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -136,7 +138,7 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const GranteeListToolbar = (props) => {
     const classes = useToolbarStyles();
-    const { numSelected } = props;
+    const { numSelected, handleDelete } = props;
 
     return (
         <Toolbar
@@ -153,7 +155,7 @@ const GranteeListToolbar = (props) => {
             {numSelected > 0 && (
                 <Tooltip title="Delete">
                     <IconButton aria-label="delete">
-                        <DeleteIcon />
+                        <DeleteIcon onClick={handleDelete} />
                     </IconButton>
                 </Tooltip>
             )}
@@ -193,7 +195,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const GranteeList = () => {
+const GranteeList = ({ filter }) => {
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('name');
@@ -203,12 +205,11 @@ const GranteeList = () => {
 
     const rowsPerPage = 10;
     const [editGranteeModalOpened, setEditGranteeModalOpened] = React.useState(false)
+    const [deleteConfirmationModalOpened, setDeleteConfirmationModalOpened] = React.useState(false)
     const [selectedId, setSelectedId] = React.useState(undefined)
 
     useEffect(() => {
-        getGrantees().then(response => {
-            setRows(response.data)
-        })
+        getData()
     }, [])
 
     useEffect(() => {
@@ -220,6 +221,12 @@ const GranteeList = () => {
     const getPagesCount = () => {
         if (rows.length < rowsPerPage) return 1
         else return rows.length / rowsPerPage
+    }
+
+    const getData = () => {
+        getGrantees().then(response => {
+            setRows(response.data)
+        })
     }
 
     const handleRequestSort = (event, property) => {
@@ -270,6 +277,22 @@ const GranteeList = () => {
         setEditGranteeModalOpened(false)
     }
 
+    const handleOpenDeleteConfirmationModal = () => {
+        setDeleteConfirmationModalOpened(true)
+    }
+
+    const handleCloseDeleteConfirmationModal = () => {
+        setDeleteConfirmationModalOpened(false)
+    }
+
+    const handleConfirmDelete = () => {
+        remove(selected).then(() => {
+            getData()
+            setSelected([])
+            handleCloseDeleteConfirmationModal()
+        })
+    }
+
     const isSelected = (_id) => selected.indexOf(_id) !== -1;
 
     const getStatusButton = (status) => {
@@ -290,11 +313,18 @@ const GranteeList = () => {
         handleCloseGranteeModal()
     }
 
+    const onItemDeleted = (ids) => {
+        getData()
+        setSelected([])
+        handleCloseGranteeModal()
+    }
+
     return (
         <div className={classes.root}>
-            <GranteeEdit id={selectedId} opened={editGranteeModalOpened} handleClose={handleCloseGranteeModal} onItemUpdated={onItemUpdated} />
+            <GranteeEdit id={selectedId} opened={editGranteeModalOpened} handleClose={handleCloseGranteeModal} onItemUpdated={onItemUpdated} onItemDeleted={onItemDeleted} />
+            <DeleteConfirmationModal title="Excluir Favorecido" subtitle={`Você Confirma a exclusão do favorecido?`} description="O hitórico de pagamentos para este favorecido será mantido, mas ele será removido da sua lista de favorecidos." opened={deleteConfirmationModalOpened} handleClose={handleCloseDeleteConfirmationModal} handleConfirm={handleConfirmDelete} />
             <Paper className={classes.paper}>
-                <GranteeListToolbar numSelected={selected.length} />
+                <GranteeListToolbar numSelected={selected.length} handleDelete={handleOpenDeleteConfirmationModal} />
                 <TableContainer>
                     <Table
                         className={classes.table}

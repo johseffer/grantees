@@ -18,12 +18,12 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function GranteeEdit({ id, opened, handleClose, onItemUpdated }) {
+export default function GranteeEdit({ id, opened, handleClose, onItemUpdated, onItemDeleted }) {
     const classes = useStyles();
 
     const body = (
         <div className={classes.paper}>
-            <GranteeForm id={id} onClickCancel={handleClose} onItemUpdated={onItemUpdated} />
+            <GranteeForm id={id} onClickCancel={handleClose} onItemUpdated={onItemUpdated} onItemDeleted={onItemDeleted} />
         </div>
     );
 

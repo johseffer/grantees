@@ -5,10 +5,13 @@ import { navigate } from 'hookrouter'
 import { makeStyles } from '@material-ui/core/styles'
 import StyledTextField from './../../../../components/styled-text-field/styled-text-field.component'
 import StyledButton from './../../../../components/styled-button/styled-button.component'
-import { getGranteeById, update } from '../../../../gateways/grantee.gateway'
+import { getGranteeById, update, remove } from '../../../../gateways/grantee.gateway'
 import SelectBank from './../../../../components/select-bank/select-bank.component'
 import SelectAccountType from './../../../../components/select-account-type/select-account-type.component'
 import { create } from './../../../../gateways/grantee.gateway'
+import DeleteIcon from '@material-ui/icons/Delete'
+import DeleteConfirmationModal from './../delete-confirmation-modal/delete-confirmation-modal.component'
+import Button from '@material-ui/core/Button'
 
 import './grantee-form.component.scss'
 
@@ -24,10 +27,13 @@ const useStyles = makeStyles((theme) => ({
     },
     inputCpfCnpj: {
         width: '25%'
+    },
+    deleteButton: {
+        marginRight: '10px'
     }
 }));
 
-const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
+const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDeleted = undefined }) => {
     const classes = useStyles();
 
     const [name, setName] = React.useState('');
@@ -39,6 +45,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
     const [account, setAccount] = React.useState('');
     const [accountDigit, setAccountDigit] = React.useState('');
     const [accountType, setAccountType] = React.useState('');
+    const [deleteConfirmationModalOpened, setDeleteConfirmationModalOpened] = React.useState(false);
 
     setLocale({
         mixed: {
@@ -117,7 +124,6 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
         onClickCancel()
     }
 
-    
     const getData = () => {
         return {
             _id: id,
@@ -133,8 +139,27 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
         }
     }
 
-    const onSubmit = (data) => {      
-        const state = getData()  
+    const handleOpenModalDeleteConfirmation = () => {
+        setDeleteConfirmationModalOpened(true);
+    }
+
+    const handleCloseModalDeleteConfirmation = () => {
+        setDeleteConfirmationModalOpened(false);
+    }
+
+    const handleDelete = () => {
+        handleOpenModalDeleteConfirmation()
+    }
+
+    const handleConfirmDelete = () => {
+        remove([id]).then(() => {
+            handleCloseModalDeleteConfirmation()
+            onItemDeleted([id])
+        })
+    }
+
+    const onSubmit = (data) => {
+        const state = getData()
         if (id) {
             update(id, state).then(response => {
                 onItemUpdated(state);
@@ -148,11 +173,12 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
 
     return (
         <div className="grantee-form-container">
-            <form  onSubmit={handleSubmit(onSubmit)} className={classes.root}>
+            <DeleteConfirmationModal title="Excluir Favorecido" subtitle={`Você Confirma a exclusão do favorecido?`} description="O hitórico de pagamentos para este favorecido será mantido, mas ele será removido da sua lista de favorecidos." opened={deleteConfirmationModalOpened} handleClose={handleCloseModalDeleteConfirmation} handleConfirm={handleConfirmDelete} />
+            <form onSubmit={handleSubmit(onSubmit)} className={classes.root}>
                 <span className="grantee-form-title">Quais os dados do favorecido?</span>
                 <div className="form-control">
                     <StyledTextField
-                        name="name" 
+                        name="name"
                         label="Qual o nome completo ou razão social do favorecido?"
                         size="small"
                         style={{ width: '75%' }}
@@ -164,13 +190,13 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
                         helperText={errors.name ? errors.name.message : undefined}
                     />
                     <StyledTextField
-                        name="cpfCnpj" 
+                        name="cpfCnpj"
                         label="Qual o CPF ou CNPJ?"
                         size="small"
                         style={{ width: '25%' }}
                         InputLabelProps={{ shrink: true }}
                         onChange={onChangeCpfCnpj}
-                        value={cpfCnpj}                        
+                        value={cpfCnpj}
                         error={errors.cpfCnpj ? true : false}
                         inputRef={register}
                         helperText={errors.cpfCnpj ? errors.cpfCnpj.message : undefined}
@@ -178,13 +204,13 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
                 </div>
                 <div className="form-control">
                     <StyledTextField
-                        name="email" 
+                        name="email"
                         label="Qual o email do favorecido?"
                         size="small"
                         style={{ width: '75%' }}
                         InputLabelProps={{ shrink: true }}
                         onChange={onChangeEmail}
-                        value={email}                        
+                        value={email}
                         error={errors.email ? true : false}
                         inputRef={register}
                         helperText={errors.email ? errors.email.message : undefined}
@@ -200,7 +226,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
                         style={{ width: '30%' }}
                         InputLabelProps={{ shrink: true }}
                         onChange={onChangeAgency}
-                        value={agency}                        
+                        value={agency}
                         error={errors.agency ? true : false}
                         inputRef={register}
                         helperText={errors.agency ? errors.agency.message : undefined}
@@ -219,7 +245,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
                     />
                 </div>
                 <div className="form-control">
-                    <SelectAccountType onChange={onChangeAccountType} selected={accountType} register={register} errors={errors} bank={bank} />                    
+                    <SelectAccountType onChange={onChangeAccountType} selected={accountType} register={register} errors={errors} bank={bank} />
                     <StyledTextField
                         name="account"
                         label="Qual a conta corrente?"
@@ -227,7 +253,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
                         style={{ width: '30%' }}
                         InputLabelProps={{ shrink: true }}
                         onChange={onChangeAccount}
-                        value={account}                        
+                        value={account}
                         error={errors.account ? true : false}
                         inputRef={register}
                         helperText={errors.account ? errors.account.message : undefined}
@@ -239,7 +265,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
                         style={{ width: '10%' }}
                         InputLabelProps={{ shrink: true }}
                         onChange={onChangeAccountDigit}
-                        value={accountDigit}                        
+                        value={accountDigit}
                         error={errors.accountDigit ? true : false}
                         inputRef={register}
                         helperText={errors.accountDigit ? errors.accountDigit.message : undefined}
@@ -250,12 +276,24 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined }) => {
                     <StyledButton variant="outlined" size="large" onClick={_onClickCancel}>
                         Cancelar
                     </StyledButton>
-                    <StyledButton variant="contained" size="large" type="submit">
-                        Salvar
-                    </StyledButton>
+                    <div>
+                        {id && (
+                            <Button
+                                className={classes.deleteButton}
+                                variant="contained"
+                                color="secondary"
+                                size="large"
+                                startIcon={<DeleteIcon />}
+                                onClick={handleDelete}
+                            />
+                        )}
+                        < StyledButton variant="contained" size="large" type="submit">
+                            Salvar
+                        </StyledButton>
+                    </div>
                 </div>
             </form>
-        </div>
+        </div >
     )
 }
 
