@@ -15,3 +15,7 @@ export function create(data) {
 export function update(id, data) {
     return post(`/grantee/update/${id}`, data)
 }
+
+export function remove(ids) {
+    return post('/grantee/delete', { ids: ids })
+}
