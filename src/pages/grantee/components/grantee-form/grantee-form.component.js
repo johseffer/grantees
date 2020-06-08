@@ -55,20 +55,32 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
     });
 
 
-    let granteeSchema = object().shape({
-        name: string().required().label('Nome do favorecido'),
-        email: string().email().required().label('E-mail'),
-        cpfCnpj: string().required().label('CPF / CNPJ'),
-        bank: string().required().label('Banco'),
-        agency: string().required().label('Agência'),
-        agencyDigit: string().required().label('Dígito'),
-        account: string().required().label('Conta corrente'),
-        accountDigit: string().required().label('Dígito'),
-        accountType: string().required().label('Tipo de conta')
-    });
+    const granteeSchema = () => {
+        const isBankOfBrasil = bank === '001'
+        const agencySchema = string().required().label('Agência')
+            .max(isBankOfBrasil ? 4 : 10)
+            .matches(isBankOfBrasil ? /^[xX0-9]{0,1}$/ : /^(?!0+$)[0-9]{0,10}$/)
+        const agencyDigitSchema = string().label('Dígito').max(1).matches(/^[0-9]{0,1}$/)
+        const accountSchema = string().required().label('Conta corrente')
+            .max(isBankOfBrasil ? 8 : 11).matches(/^(?!0+$)[0-9]{0,11}$/)
+        const accountDigitSchema = string().required().label('Dígito').max(1)
+            .matches(isBankOfBrasil ? /^(?!0+$)[0-9]{0,11}$/ : /^[0-9]{0,1}$/)
+        const schema = {
+            name: string().required().label('Nome do favorecido'),
+            email: string().email().required().label('E-mail'),
+            cpfCnpj: string().required().label('CPF / CNPJ'),
+            bank: string().required().label('Banco'),
+            agency: agencySchema,
+            agencyDigit: agencyDigitSchema,
+            account: accountSchema,
+            accountDigit: accountDigitSchema,
+            accountType: string().required().label('Tipo de conta')
+        }
+        return object().shape(schema);
+    }
 
     const { register, handleSubmit, errors } = useForm({
-        validationSchema: granteeSchema
+        validationSchema: granteeSchema()
     });
 
     useEffect(() => {
