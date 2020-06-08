@@ -44,9 +44,19 @@ const styles = {
 
 const GranteeListPage = (props) => {
     const { classes } = props;
+    const [searchFilter, setSearchFilter] = React.useState('');
+    const [searchFilterApplyed, setSearchFilterApplyed] = React.useState('');
 
     const handleOnClickAdd = () => {
         navigate('/grantees/add');
+    }
+
+    const onChangeSearch = (e) => {
+        setSearchFilter(e.target.value)
+    }
+
+    const onClickSubmitFilter = () => {
+        setSearchFilterApplyed(searchFilter)
     }
 
     return (
@@ -72,16 +82,22 @@ const GranteeListPage = (props) => {
                                         variant="contained"
                                         className={classes.button}
                                         startIcon={<SearchIcon />}
+                                        onClick={onClickSubmitFilter}
                                     />
                                 </InputAdornment>
                             ),
                             classes: { input: classes.input, adornedEnd: classes.adornedEnd }
                         }}
+                        onChange={onChangeSearch}
+                        onKeyUp={(event) => {
+                            if (event.key === 'Enter')
+                                onClickSubmitFilter();
+                        }}
                     />
                 </div>
             </div>
             <div>
-                <GranteeList />
+                <GranteeList filter={searchFilterApplyed} />
             </div>
         </>
     )

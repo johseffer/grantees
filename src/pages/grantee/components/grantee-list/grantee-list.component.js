@@ -210,7 +210,7 @@ const GranteeList = ({ filter }) => {
 
     useEffect(() => {
         getData()
-    }, [])
+    }, [filter])
 
     useEffect(() => {
         if (selectedId) {
@@ -224,7 +224,7 @@ const GranteeList = ({ filter }) => {
     }
 
     const getData = () => {
-        getGrantees().then(response => {
+        getGrantees(filter).then(response => {
             setRows(response.data)
         })
     }
