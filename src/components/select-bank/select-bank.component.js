@@ -9,7 +9,7 @@ const banks = [
     { title: 'Sicoob (756)', code: '756' }
 ]
 
-const SelectBank = ({ onChange, value, register, errors }) => {
+const SelectBank = ({ onChange, value, register, errors, disabled }) => {
     return (
         <Autocomplete
             id="select-bank"
@@ -17,6 +17,7 @@ const SelectBank = ({ onChange, value, register, errors }) => {
             getOptionLabel={(option) => option.title}
             style={{ width: '60%', marginRight: '15px' }}
             value={value ? banks[banks.findIndex(item => item.code === value)] : ''}
+            disabled={disabled}
             onChange={onChange}
             renderInput={(params) =>                 
                 <StyledTextField

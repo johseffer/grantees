@@ -3,7 +3,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import StyledTextField from './../styled-text-field/styled-text-field.component'
 
 
-const SelectAccountType = ({ onChange, selected, register, errors, bank }) => {
+const SelectAccountType = ({ onChange, selected, register, errors, bank, disabled }) => {
     return (
         <StyledTextField
             label="Qual o tipo de conta?"
@@ -21,6 +21,7 @@ const SelectAccountType = ({ onChange, selected, register, errors, bank }) => {
             value={selected}
             onChange={onChange}
             helperText={errors.accountType ? errors.accountType.message : undefined}
+            disabled={disabled}
             select
         >
             <MenuItem value="1">Conta Corrente</MenuItem>
