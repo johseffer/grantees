@@ -22,14 +22,33 @@ connection.once('open', function () {
 
 const granteesRoutes = express.Router();
 
-granteesRoutes.route('/').get(function (req, res) {
-  Grantee.find(function (err, grantees) {
+granteesRoutes.route('/').get(function (req, res) {  
+  const callback = function (err, grantees) {
     if (err) {
       console.log(err);
     } else {
       res.json(grantees);
     }
-  });
+  }
+  const filter = req.query.filter
+  if (filter && filter !== '') {
+    const splitedFilter = filter.split('-')
+    const orFilter =  [{ name: filter }, { cnpfCnpj: filter }]
+    if (splitedFilter.length > 0) {
+      const filterWithoutDigit = splitedFilter[0]
+      const digitFilter = splitedFilter[1]
+      orFilter.push({ agency: filterWithoutDigit })
+      orFilter.push({ agencyDigit: digitFilter })
+      orFilter.push({ account: filterWithoutDigit })
+      orFilter.push({ accountDigit: digitFilter })
+    } else {
+      orFilter.push({ agency: filter })
+      orFilter.push({ account: filter })
+    }
+    Grantee.find({ $or: orFilter }, callback);
+  } else {
+    Grantee.find(callback);
+  }
 });
 
 granteesRoutes.route('/:id').get(function (req, res) {

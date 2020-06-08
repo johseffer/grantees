@@ -1,7 +1,7 @@
 import { get, post } from 'axios'
 
-export function getGrantees() {
-    return get('/grantee')
+export function getGrantees(filter) {
+    return get('/grantee', { params: { filter: filter } })
 }
 
 export function getGranteeById(id) {
