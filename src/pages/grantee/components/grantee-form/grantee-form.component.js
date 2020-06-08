@@ -84,18 +84,20 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
     });
 
     useEffect(() => {
-        getGranteeById(id).then(response => {
-            setName(response.data.name)
-            setCpfCnpj(response.data.cpfCnpj)
-            setEmail(response.data.email)
-            setBank(response.data.bank)
-            setAgency(response.data.agency)
-            setAgencyDigit(response.data.agencyDigit)
-            setAccount(response.data.account)
-            setAccountDigit(response.data.accountDigit)
-            setAccountType(response.data.accountType)
-            setStatus(response.data.status)
-        })
+        if (id) {
+            getGranteeById(id).then(response => {
+                setName(response.data.name)
+                setCpfCnpj(response.data.cpfCnpj)
+                setEmail(response.data.email)
+                setBank(response.data.bank)
+                setAgency(response.data.agency)
+                setAgencyDigit(response.data.agencyDigit)
+                setAccount(response.data.account)
+                setAccountDigit(response.data.accountDigit)
+                setAccountType(response.data.accountType)
+                setStatus(response.data.status)
+            })
+        }
     }, [id])
 
     const isDisabled = () => {
