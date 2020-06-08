@@ -45,6 +45,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
     const [account, setAccount] = React.useState('');
     const [accountDigit, setAccountDigit] = React.useState('');
     const [accountType, setAccountType] = React.useState('');
+    const [status, setStatus] = React.useState('0');
     const [deleteConfirmationModalOpened, setDeleteConfirmationModalOpened] = React.useState(false);
 
     setLocale({
@@ -81,8 +82,13 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
             setAccount(response.data.account)
             setAccountDigit(response.data.accountDigit)
             setAccountType(response.data.accountType)
+            setStatus(response.data.status)
         })
     }, [id])
+
+    const isDisabled = () => {
+        return id && status === '1'
+    }
 
     const onChangeName = (e) => {
         setName(e.target.value)
@@ -135,7 +141,8 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
             agencyDigit: agencyDigit,
             account: account,
             accountDigit: accountDigit,
-            accountType: accountType
+            accountType: accountType,
+            status: status
         }
     }
 
@@ -188,6 +195,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
                         error={errors.name ? true : false}
                         inputRef={register}
                         helperText={errors.name ? errors.name.message : undefined}
+                        disabled={isDisabled()}
                     />
                     <StyledTextField
                         name="cpfCnpj"
@@ -200,6 +208,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
                         error={errors.cpfCnpj ? true : false}
                         inputRef={register}
                         helperText={errors.cpfCnpj ? errors.cpfCnpj.message : undefined}
+                        disabled={isDisabled()}
                     />
                 </div>
                 <div className="form-control">
@@ -218,7 +227,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
                 </div>
                 <span className="grantee-form-title">Quais os dados bancários do favorecido?</span>
                 <div className="form-control">
-                    <SelectBank onChange={onChangeBank} value={bank} register={register} errors={errors} />
+                    <SelectBank onChange={onChangeBank} value={bank} register={register} errors={errors} disabled={isDisabled()} />
                     <StyledTextField
                         name="agency"
                         label="Qual a agência?"
@@ -230,6 +239,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
                         error={errors.agency ? true : false}
                         inputRef={register}
                         helperText={errors.agency ? errors.agency.message : undefined}
+                        disabled={isDisabled()}
                     />
                     <StyledTextField
                         name="agencyDigit"
@@ -242,10 +252,11 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
                         error={errors.agencyDigit ? true : false}
                         inputRef={register}
                         helperText={errors.agencyDigit ? errors.agencyDigit.message : undefined}
+                        disabled={isDisabled()}
                     />
                 </div>
                 <div className="form-control">
-                    <SelectAccountType onChange={onChangeAccountType} selected={accountType} register={register} errors={errors} bank={bank} />
+                    <SelectAccountType onChange={onChangeAccountType} selected={accountType} register={register} errors={errors} bank={bank} disabled={isDisabled()} />
                     <StyledTextField
                         name="account"
                         label="Qual a conta corrente?"
@@ -257,6 +268,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
                         error={errors.account ? true : false}
                         inputRef={register}
                         helperText={errors.account ? errors.account.message : undefined}
+                        disabled={isDisabled()}
                     />
                     <StyledTextField
                         name="accountDigit"
@@ -269,6 +281,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
                         error={errors.accountDigit ? true : false}
                         inputRef={register}
                         helperText={errors.accountDigit ? errors.accountDigit.message : undefined}
+                        disabled={isDisabled()}
                     />
                 </div>
 
