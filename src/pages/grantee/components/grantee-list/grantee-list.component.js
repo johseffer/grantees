@@ -371,8 +371,8 @@ const GranteeList = ({ filter }) => {
                                             <TableCell onClick={() => { handleEditGrantee(row) }}>
                                                 <BankIcon bank={row.bank} />
                                             </TableCell>
-                                            <TableCell onClick={() => { handleEditGrantee(row) }}>{`${row.agency}-${row.agencyDigit}`}</TableCell>
-                                            <TableCell onClick={() => { handleEditGrantee(row) }}>{`${row.account}-${row.accountDigit}`}</TableCell>
+                                            <TableCell onClick={() => { handleEditGrantee(row) }}>{row.agency}{row.agencyDigit ? `-${row.agencyDigit}` : ''}</TableCell>
+                                            <TableCell onClick={() => { handleEditGrantee(row) }}>{row.account}{row.accountDigit ? `-${row.accountDigit}` : ''}</TableCell>
                                             <TableCell onClick={() => { handleEditGrantee(row) }}>
                                                 {getStatusButton(row.status)}
                                             </TableCell>
