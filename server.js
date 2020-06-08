@@ -22,7 +22,7 @@ connection.once('open', function () {
 
 const granteesRoutes = express.Router();
 
-granteesRoutes.route('/').get(function (req, res) {  
+granteesRoutes.route('/').get(function (req, res) {
   const callback = function (err, grantees) {
     if (err) {
       console.log(err);
@@ -33,7 +33,7 @@ granteesRoutes.route('/').get(function (req, res) {
   const filter = req.query.filter
   if (filter && filter !== '') {
     const splitedFilter = filter.split('-')
-    const orFilter =  [{ name: filter }, { cnpfCnpj: filter }]
+    const orFilter = [{ name: filter }, { cnpfCnpj: filter }]
     if (splitedFilter.length > 0) {
       const filterWithoutDigit = splitedFilter[0]
       const digitFilter = splitedFilter[1]
@@ -73,22 +73,25 @@ granteesRoutes.route('/update/:id').post(function (req, res) {
   Grantee.findById(req.params.id, function (err, grantee) {
     if (!grantee)
       res.status(404).send("data is not found");
-    else
+    else {
       grantee.name = req.body.name;
-    grantee.cpfCnpj = req.body.cpfCnpj;
-    grantee.bank = req.body.bank;
-    grantee.agency = req.body.agency;
-    grantee.agencyDigit = req.body.agencyDigit;
-    grantee.account = req.body.account;
-    grantee.accountType = req.body.accountType;
-    grantee.accountDigit = req.body.accountDigit;
-    grantee.status = req.body.status;
-    grantee.save().then(grantee => {
-      res.json('Grantee updated!');
-    })
-      .catch(err => {
-        res.status(400).send("Update not possible");
-      });
+      grantee.email = req.body.email;
+      grantee.cpfCnpj = req.body.cpfCnpj;
+      grantee.bank = req.body.bank;
+      grantee.agency = req.body.agency;
+      grantee.agencyDigit = req.body.agencyDigit;
+      grantee.account = req.body.account;
+      grantee.accountType = req.body.accountType;
+      grantee.accountDigit = req.body.accountDigit;
+      grantee.status = req.body.status;
+      grantee.save().then(grantee => {
+        res.json('Grantee updated!');
+      })
+        .catch(err => {
+          res.status(400).send("Update not possible");
+        }
+        );
+    }
   });
 });
 
