@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { setLocale, string, object } from 'yup';
 import { navigate } from 'hookrouter'
+import { useSnackbar } from 'notistack'
 import { makeStyles } from '@material-ui/core/styles'
 import StyledTextField from './../../../../components/styled-text-field/styled-text-field.component'
 import StyledButton from './../../../../components/styled-button/styled-button.component'
@@ -35,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 
 const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDeleted = undefined }) => {
     const classes = useStyles();
+    const { enqueueSnackbar } = useSnackbar();
 
     const [name, setName] = React.useState('');
     const [cpfCnpj, setCpfCnpj] = React.useState('');
@@ -183,10 +185,12 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
         const state = getData()
         if (id) {
             update(id, state).then(response => {
+                enqueueSnackbar('Favorecido alterado com sucesso', { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right' }, autoHideDuration: 6000 })
                 onItemUpdated(state);
             })
         } else {
-            create(state).then(response => {
+            create(state).then(response => {                
+                enqueueSnackbar('Favorecido incluído com sucesso', { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right' }, autoHideDuration: 6000 })
                 navigate('/');
             })
         }

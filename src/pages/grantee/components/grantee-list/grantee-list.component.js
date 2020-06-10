@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
+import { useSnackbar } from 'notistack'
 import { lighten, makeStyles } from '@material-ui/core/styles'
 import IconButton from '@material-ui/core/IconButton'
 import Table from '@material-ui/core/Table'
@@ -196,7 +197,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const GranteeList = ({ filter }) => {
-    const classes = useStyles();
+    const classes = useStyles();    
+    const { enqueueSnackbar } = useSnackbar();
+
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('name');
     const [rows, setRows] = React.useState([]);
@@ -290,6 +293,10 @@ const GranteeList = ({ filter }) => {
             getData()
             setSelected([])
             handleCloseDeleteConfirmationModal()
+            
+            const moreThanOne = selected.length > 1 ? 's' : ''
+            const confirmationMessage = `Favorecido${moreThanOne} removido${moreThanOne} com sucesso`
+            enqueueSnackbar(confirmationMessage, { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right' }, autoHideDuration: 6000 })
         })
     }
 
@@ -316,7 +323,7 @@ const GranteeList = ({ filter }) => {
     const onItemDeleted = (ids) => {
         getData()
         setSelected([])
-        handleCloseGranteeModal()
+        handleCloseGranteeModal()        
     }
 
     return (
