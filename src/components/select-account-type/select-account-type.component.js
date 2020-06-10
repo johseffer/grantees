@@ -18,6 +18,11 @@ const SelectAccountType = ({ onChange, selected, register, errors, bank, disable
                     register({ name: "accountType", value: selected });
                 }
             }}
+            SelectProps={{
+                SelectDisplayProps: {
+                    'data-testid': 'select-account-type',
+                },
+            }}
             value={selected}
             onChange={onChange}
             helperText={errors.accountType ? errors.accountType.message : undefined}
