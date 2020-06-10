@@ -31,7 +31,7 @@ const Nav = () => {
     
     return (
         <>
-            <div className="container">
+            <div data-testid="navbar" className="container">
                 <div className="header">
                     <img className="iconeTransfera" alt="" src={transfeeraIcon} />
                 </div>
