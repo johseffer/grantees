@@ -6,10 +6,10 @@ import { lighten, makeStyles } from '@material-ui/core/styles'
 import IconButton from '@material-ui/core/IconButton'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
+import TablePagination from '@material-ui/core/TablePagination'
 import TableCell from '@material-ui/core/TableCell'
 import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
-import Pagination from '@material-ui/lab/Pagination'
 import TableRow from '@material-ui/core/TableRow'
 import TableSortLabel from '@material-ui/core/TableSortLabel'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -197,7 +197,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const GranteeList = ({ filter }) => {
-    const classes = useStyles();    
+    const classes = useStyles();
     const { enqueueSnackbar } = useSnackbar();
 
     const [order, setOrder] = React.useState('asc');
@@ -221,12 +221,8 @@ const GranteeList = ({ filter }) => {
         }
     }, [selectedId])
 
-    const getPagesCount = () => {
-        if (rows.length < rowsPerPage) return 1
-        else return rows.length / rowsPerPage
-    }
-
     const getData = () => {
+        setPage(0)
         getGrantees(filter).then(response => {
             setRows(response.data)
         })
@@ -293,7 +289,7 @@ const GranteeList = ({ filter }) => {
             getData()
             setSelected([])
             handleCloseDeleteConfirmationModal()
-            
+
             const moreThanOne = selected.length > 1 ? 's' : ''
             const confirmationMessage = `Favorecido${moreThanOne} removido${moreThanOne} com sucesso`
             enqueueSnackbar(confirmationMessage, { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right' }, autoHideDuration: 6000 })
@@ -323,7 +319,8 @@ const GranteeList = ({ filter }) => {
     const onItemDeleted = (ids) => {
         getData()
         setSelected([])
-        handleCloseGranteeModal()        
+        handleCloseGranteeModal()
+        enqueueSnackbar('Favorecido removido com sucesso', { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right' }, autoHideDuration: 6000 })
     }
 
     return (
@@ -389,8 +386,16 @@ const GranteeList = ({ filter }) => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-
-                <Pagination style={{ display: 'flex', justifyContent: 'center', height: 100 }} count={getPagesCount()} page={page} color="#1FBFAE" onChangePage={handleChangePage} />
+                <div className="table-paginator">
+                    <TablePagination
+                        rowsPerPageOptions={[]}
+                        component="div"
+                        count={rows.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onChangePage={handleChangePage}
+                    />
+                </div>
                 <div className="table-footer">
                     <img src={transfeeraIcon} width="120" alt="" />
                 </div>
