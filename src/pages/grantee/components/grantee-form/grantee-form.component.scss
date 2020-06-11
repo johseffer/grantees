@@ -11,10 +11,18 @@
     display: block;
 }
 
+.grantee-name-title {
+    font-family: "Roboto";
+    font-size: 22px;
+    padding: 5px;
+    font-weight: 400;
+}
+
 .grantee-form-container {
     display: flex;
     justify-content: center;
     padding: 25px;
+    flex-direction: column;
 }
 
 .form-control {

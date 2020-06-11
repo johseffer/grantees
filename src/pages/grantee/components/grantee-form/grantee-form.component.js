@@ -38,16 +38,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
     const classes = useStyles();
     const { enqueueSnackbar } = useSnackbar();
 
-    const [name, setName] = React.useState('');
-    const [cpfCnpj, setCpfCnpj] = React.useState('');
-    const [email, setEmail] = React.useState('');
-    const [bank, setBank] = React.useState('');
-    const [agency, setAgency] = React.useState('');
-    const [agencyDigit, setAgencyDigit] = React.useState('');
-    const [account, setAccount] = React.useState('');
-    const [accountDigit, setAccountDigit] = React.useState('');
-    const [accountType, setAccountType] = React.useState('');
-    const [status, setStatus] = React.useState('0');
+    const [grantee, setGrantee] = React.useState({ status: '0', accountType: '' });
     const [deleteConfirmationModalOpened, setDeleteConfirmationModalOpened] = React.useState(false);
 
     setLocale({
@@ -58,7 +49,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
 
 
     const granteeSchema = () => {
-        const isBankOfBrasil = bank === '001'
+        const isBankOfBrasil = grantee.bank === '001'
         const agencySchema = string().required().label('Agência')
             .max(isBankOfBrasil ? 4 : 10)
             .matches(isBankOfBrasil ? /^[xX0-9]{0,1}$/ : /^(?!0+$)[0-9]{0,10}$/)
@@ -88,78 +79,53 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
     useEffect(() => {
         if (id) {
             getGranteeById(id).then(response => {
-                setName(response.data.name)
-                setCpfCnpj(response.data.cpfCnpj)
-                setEmail(response.data.email)
-                setBank(response.data.bank)
-                setAgency(response.data.agency)
-                setAgencyDigit(response.data.agencyDigit)
-                setAccount(response.data.account)
-                setAccountDigit(response.data.accountDigit)
-                setAccountType(response.data.accountType)
-                setStatus(response.data.status)
+                setGrantee(response.data)
             })
         }
     }, [id])
 
     const isDisabled = () => {
-        return id && status === '1'
+        return id && grantee.status === '1'
     }
 
     const onChangeName = (e) => {
-        setName(e.target.value)
+        setGrantee({ ...grantee, name: e.target.value })
     }
 
     const onChangeEmail = (e) => {
-        setEmail(e.target.value)
+        setGrantee({ ...grantee, email: e.target.value })
     }
 
     const onChangeCpfCnpj = (e) => {
-        setCpfCnpj(e.target.value)
+        setGrantee({ ...grantee, cpfCnpj: e.target.value })
     }
 
     const onChangeBank = (e, values) => {
-        setBank(values.code)
+        setGrantee({ ...grantee, bank: values.code })
     }
 
     const onChangeAgency = (e) => {
-        setAgency(e.target.value)
+        setGrantee({ ...grantee, agency: e.target.value })
     }
 
     const onChangeAgencyDigit = (e) => {
-        setAgencyDigit(e.target.value)
+        setGrantee({ ...grantee, agencyDigit: e.target.value })
     }
 
     const onChangeAccount = (e) => {
-        setAccount(e.target.value)
+        setGrantee({ ...grantee, account: e.target.value })
     }
 
     const onChangeAccountType = (e) => {
-        setAccountType(e.target.value)
+        setGrantee({ ...grantee, accountType: e.target.value })
     }
 
     const onChangeAccountDigit = (e) => {
-        setAccountDigit(e.target.value)
+        setGrantee({ ...grantee, accountDigit: e.target.value })
     }
 
     const _onClickCancel = () => {
         onClickCancel()
-    }
-
-    const getData = () => {
-        return {
-            _id: id,
-            name: name,
-            cpfCnpj: cpfCnpj,
-            email: email,
-            bank: bank,
-            agency: agency,
-            agencyDigit: agencyDigit,
-            account: account,
-            accountDigit: accountDigit,
-            accountType: accountType,
-            status: status
-        }
     }
 
     const handleOpenModalDeleteConfirmation = () => {
@@ -182,14 +148,13 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
     }
 
     const onSubmit = (data) => {
-        const state = getData()
         if (id) {
-            update(id, state).then(response => {
+            update(id, grantee).then(response => {
                 enqueueSnackbar('Favorecido alterado com sucesso', { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right' }, autoHideDuration: 6000 })
-                onItemUpdated(state);
+                onItemUpdated(grantee);
             })
         } else {
-            create(state).then(response => {                
+            create(grantee).then(response => {
                 enqueueSnackbar('Favorecido incluído com sucesso', { variant: 'success', anchorOrigin: { vertical: 'top', horizontal: 'right' }, autoHideDuration: 6000 })
                 navigate('/');
             })
@@ -199,7 +164,10 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
     return (
         <div className="grantee-form-container">
             <DeleteConfirmationModal title="Excluir Favorecido" subtitle={`Você Confirma a exclusão do favorecido?`} description="O hitórico de pagamentos para este favorecido será mantido, mas ele será removido da sua lista de favorecidos." opened={deleteConfirmationModalOpened} handleClose={handleCloseModalDeleteConfirmation} handleConfirm={handleConfirmDelete} />
-            <form onSubmit={handleSubmit(onSubmit)} className={classes.root}>
+            <div className="grantee-name-title">
+                <span>{grantee.name}</span>
+            </div>
+            <form onSubmit={handleSubmit(onSubmit)} className={classes.root} data-testid="grantee-form">
                 <span className="grantee-form-title">Quais os dados do favorecido?</span>
                 <div className="form-control">
                     <StyledTextField
@@ -209,7 +177,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
                         style={{ width: '75%' }}
                         InputLabelProps={{ shrink: true }}
                         onChange={onChangeName}
-                        value={name}
+                        value={grantee.name}
                         error={errors.name ? true : false}
                         inputRef={register}
                         helperText={errors.name ? errors.name.message : undefined}
@@ -222,7 +190,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
                         style={{ width: '25%' }}
                         InputLabelProps={{ shrink: true }}
                         onChange={onChangeCpfCnpj}
-                        value={cpfCnpj}
+                        value={grantee.cpfCnpj}
                         error={errors.cpfCnpj ? true : false}
                         inputRef={register}
                         helperText={errors.cpfCnpj ? errors.cpfCnpj.message : undefined}
@@ -237,7 +205,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
                         style={{ width: '75%' }}
                         InputLabelProps={{ shrink: true }}
                         onChange={onChangeEmail}
-                        value={email}
+                        value={grantee.email}
                         error={errors.email ? true : false}
                         inputRef={register}
                         helperText={errors.email ? errors.email.message : undefined}
@@ -245,7 +213,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
                 </div>
                 <span className="grantee-form-title">Quais os dados bancários do favorecido?</span>
                 <div className="form-control">
-                    <SelectBank onChange={onChangeBank} value={bank} register={register} errors={errors} disabled={isDisabled()} />
+                    <SelectBank onChange={onChangeBank} value={grantee.bank} register={register} errors={errors} disabled={isDisabled()} />
                     <StyledTextField
                         name="agency"
                         label="Qual a agência?"
@@ -253,7 +221,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
                         style={{ width: '30%' }}
                         InputLabelProps={{ shrink: true }}
                         onChange={onChangeAgency}
-                        value={agency}
+                        value={grantee.agency}
                         error={errors.agency ? true : false}
                         inputRef={register}
                         helperText={errors.agency ? errors.agency.message : undefined}
@@ -266,7 +234,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
                         style={{ width: '10%' }}
                         InputLabelProps={{ shrink: true }}
                         onChange={onChangeAgencyDigit}
-                        value={agencyDigit}
+                        value={grantee.agencyDigit}
                         error={errors.agencyDigit ? true : false}
                         inputRef={register}
                         helperText={errors.agencyDigit ? errors.agencyDigit.message : undefined}
@@ -274,7 +242,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
                     />
                 </div>
                 <div className="form-control">
-                    <SelectAccountType onChange={onChangeAccountType} selected={accountType} register={register} errors={errors} bank={bank} disabled={isDisabled()} />
+                    <SelectAccountType onChange={onChangeAccountType} selected={grantee.accountType} register={register} errors={errors} bank={grantee.bank} disabled={isDisabled()} />
                     <StyledTextField
                         name="account"
                         label="Qual a conta corrente?"
@@ -282,7 +250,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
                         style={{ width: '30%' }}
                         InputLabelProps={{ shrink: true }}
                         onChange={onChangeAccount}
-                        value={account}
+                        value={grantee.account}
                         error={errors.account ? true : false}
                         inputRef={register}
                         helperText={errors.account ? errors.account.message : undefined}
@@ -295,7 +263,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
                         style={{ width: '10%' }}
                         InputLabelProps={{ shrink: true }}
                         onChange={onChangeAccountDigit}
-                        value={accountDigit}
+                        value={grantee.accountDigit}
                         error={errors.accountDigit ? true : false}
                         inputRef={register}
                         helperText={errors.accountDigit ? errors.accountDigit.message : undefined}
@@ -316,6 +284,7 @@ const GranteeForm = ({ id, onClickCancel, onItemUpdated = undefined, onItemDelet
                                 size="large"
                                 startIcon={<DeleteIcon />}
                                 onClick={handleDelete}
+                                data-testid="deleteButton"
                             />
                         )}
                         < StyledButton variant="contained" size="large" type="submit">
