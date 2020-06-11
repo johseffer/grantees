@@ -33,18 +33,13 @@ granteesRoutes.route('/').get(function (req, res) {
   const filter = req.query.filter
   if (filter && filter !== '') {
     const splitedFilter = filter.split('-')
-    const orFilter = [{ name: filter }, { cnpfCnpj: filter }]
+    const orFilter = [{ name: filter }, { cpfCnpj: filter }]
     if (splitedFilter.length > 0) {
       const filterWithoutDigit = splitedFilter[0]
       const digitFilter = splitedFilter[1]
-      orFilter.push({ agency: filterWithoutDigit })
-      orFilter.push({ agencyDigit: digitFilter })
-      orFilter.push({ account: filterWithoutDigit })
-      orFilter.push({ accountDigit: digitFilter })
-    } else {
-      orFilter.push({ agency: filter })
-      orFilter.push({ account: filter })
-    }
+      orFilter.push({ agency: filterWithoutDigit, agencyDigit: digitFilter })
+      orFilter.push({ account: filterWithoutDigit, accountDigit: digitFilter })
+    } 
     Grantee.find({ $or: orFilter }, callback);
   } else {
     Grantee.find(callback);
