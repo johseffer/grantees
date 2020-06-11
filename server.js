@@ -39,7 +39,10 @@ granteesRoutes.route('/').get(function (req, res) {
       const digitFilter = splitedFilter[1]
       orFilter.push({ agency: filterWithoutDigit, agencyDigit: digitFilter })
       orFilter.push({ account: filterWithoutDigit, accountDigit: digitFilter })
-    } 
+    } else {
+      orFilter.push({ agency: filter })
+      orFilter.push({ account: filter })
+    }
     Grantee.find({ $or: orFilter }, callback);
   } else {
     Grantee.find(callback);
